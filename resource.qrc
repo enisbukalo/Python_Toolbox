@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>icons/convert.png</file>
+    <file>icons/addfile.png</file>
+    <file>icons/addfolder.png</file>
+    <file>icons/collect.png</file>
+    <file>icons/go.png</file>
+    <file>icons/oneway.png</file>
+    <file>icons/physics.png</file>
+    <file>icons/search.png</file>
+    <file>icons/searchfolder.png</file>
+  </qresource>
+</RCC>
