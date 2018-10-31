@@ -5,6 +5,7 @@ at my fingertips.
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from QT_Converter import QtConverter
+from Py_Installer import PyInstaller
 import resource
 
 class Ui_TabWidget(object):
@@ -596,7 +597,11 @@ class Ui_TabWidget(object):
         self.qt_init.clicked.connect(self.QtConverInit)
 
         # %% PYINSTALLER DEFINITION
-        self.browse_ui.clicked.connect(self.UiFileLocation)
+        self.browse_pyinstaller_from.clicked.connect(self.PyinstallerFrom)
+        self.browse_pyinstaller_dest.clicked.connect(self.PyinstallerTo)
+        self.onefile_check.stateChanged.connect(self.PyinstallerOneFile)
+        self.noconsole_check.stateChanged.connect(self.PyinstallerNoConsole)
+        self.pyinstaller_init.clicked.connect(self.PyinstallerInit)
 
         # %% PIP INSTALLER DEFINITION
         # %% VIRTUALENV DEFINITION
@@ -654,6 +659,10 @@ class Ui_TabWidget(object):
         self.ui_new_name = None
 
         # %% PYINSTALLER VARIABLES INIT
+        self.pyinstaller_location = None
+        self.pyinstaller_destination = None
+        self.onefile = False
+        self.noconsole = False
 
         # %% PIP INSTALLER VARIABLES INIT
 
@@ -663,7 +672,7 @@ class Ui_TabWidget(object):
     def UiFileLocation(self):
         self.ui_location = self.dialog.getOpenFileName(
                 None,
-                "Select .ui File",
+                "Select a .ui File",
                 "C:\\",
                 "UI Files (*.ui)")[0]
         self.ui_from.setText(self.ui_location)
@@ -675,7 +684,7 @@ class Ui_TabWidget(object):
     def UiResourceLocation(self):
         self.ui_resource_location = self.dialog.getOpenFileName(
                 None,
-                "Select Resource File",
+                "Select a Resource File",
                 "C:\\",
                 "Resource Files (*.qrc)")[0]
         self.ui_resource.setText(self.ui_resource_location)
@@ -685,7 +694,7 @@ class Ui_TabWidget(object):
 
     def QtConverInit(self):
 
-        if self.ui_location is None or self.ui_destination is None:
+        if self.ui_location is None:
             self.ErrorHandler(
                     self.qt_error_lab,
                     "Please Select a .ui File and Destination Location",
@@ -721,6 +730,37 @@ class Ui_TabWidget(object):
                         1)
 
     # %% PYINSTALLER REGION
+    def PyinstallerFrom(self):
+        self.pyinstaller_location = self.dialog.getOpenFileName(
+                None,
+                "Select a .py File",
+                "C:\\",
+                "Python Files (*.py)")[0]
+        self.pyinstaller_from.setText(self.pyinstaller_location)
+
+    def PyinstallerTo(self):
+        self.pyinstaller_destination = self.dialog.getExistingDirectory()
+        self.pyinstaller_to.setText(self.pyinstaller_destination)
+
+    def PyinstallerOneFile(self, state_):
+        if state_ == 0:
+            self.onefile = False
+        else:
+            self.onefile = True
+
+    def PyinstallerNoConsole(self, state_):
+        if state_ == 0:
+            self.noconsole = False
+        else:
+            self.noconsole= True
+
+    def PyinstallerInit(self):
+        if self.pyinstaller_location is not None:
+            PyInstaller(
+                    pysrc=self.pyinstaller_location,
+                    exedst=self.pyinstaller_destination,
+                    onefile=self.onefile,
+                    noconsole=self.noconsole)
 
     # %% ERROR HANDLING
     """Handles Writing Errors to error labels and style"""
