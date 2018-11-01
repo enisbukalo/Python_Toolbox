@@ -36,16 +36,16 @@ class QtConverter():
             file_name = self.file_to_convert.replace('.ui', '.py')
 
         """Sends Command to CMD"""
-        curr_cwd = "/".join(self.ui_location.split("/")[:-1])
+        currwd = "/".join(self.ui_location.split("/")[:-1])
         command_to_send = ('pyuic5 -o {1} {0}').format(
                 self.file_to_convert,
                 file_name)
-        p = Popen(command_to_send, cwd=curr_cwd)
+        p = Popen(command_to_send, cwd=currwd)
         p.wait()
 
         """Moves newely created python script to the destination"""
         if self.py_destination is not None:
-            move(join(curr_cwd,
+            move(join(currwd,
                       file_name),
                  join(self.py_destination,
                       file_name))
