@@ -675,11 +675,12 @@ class Ui_TabWidget(object):
         self.virtual_python = None;
         self.virtual_name = None;
 
-#
+    # %% Handles Creating the global variable to tell the thread to shut down
     def CLOSEEVENT(self, event):
         global end_thread
         end_thread = True
 
+    # %% Is created by a thread that forces the form to snap to one side of screen
     """Handles constantly moving the screen to the desired position"""
     def KEEPMOVING(self):
         global end_thread
