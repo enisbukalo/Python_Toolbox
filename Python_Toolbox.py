@@ -33,6 +33,8 @@ class Ui_TabWidget(object):
         TabWidget.setElideMode(QtCore.Qt.ElideNone)
         TabWidget.setMovable(True)
         TabWidget.setTabBarAutoHide(False)
+        TabWidget.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.widget = TabWidget
         self.converter_page = QtWidgets.QWidget()
         self.converter_page.setMinimumSize(QtCore.QSize(0, 0))
         self.converter_page.setAutoFillBackground(False)
@@ -568,8 +570,6 @@ class Ui_TabWidget(object):
         TabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(TabWidget)
 
-        self.LoadInit()
-
         # %% QT CONVERSION DEFINITION
         self.browse_ui.clicked.connect(self.UiFileLocation)
         self.browse_ui_dest.clicked.connect(self.UiDestLocation)
@@ -594,6 +594,10 @@ class Ui_TabWidget(object):
         self.browse_virtual_python.clicked.connect(self.VirtualPython)
         self.virtual_new_name.textChanged.connect(self.VirtualName)
         self.virtual_init.clicked.connect(self.VirtualInit)
+
+        self.LoadInit()
+
+        self.widget.closeEvent = self.CLOSEEVENT
 
     def retranslateUi(self, TabWidget):
         _translate = QtCore.QCoreApplication.translate
@@ -640,6 +644,14 @@ class Ui_TabWidget(object):
 
     """Handles the initial loading of the variables for the program"""
     def LoadInit(self):
+        global end_thread
+        end_thread = False
+        from threading import Thread
+
+        moving_thread = Thread(name="Moving", target=self.KEEPMOVING)
+        moving_thread.setDaemon(True)
+        moving_thread.start()
+
         self.dialog = QtWidgets.QFileDialog()
 
         # %% QT VARIABLES INIT
@@ -662,6 +674,29 @@ class Ui_TabWidget(object):
         self.virtual_destination = None;
         self.virtual_python = None;
         self.virtual_name = None;
+
+    # %% Handles Creating the global variable to tell the thread to shut down
+    def CLOSEEVENT(self, event):
+        global end_thread
+        end_thread = True
+
+    # %% Is created by a thread that forces the form to snap to one side of screen
+    """Handles constantly moving the screen to the desired position"""
+    def KEEPMOVING(self):
+        global end_thread
+        while True:
+            if end_thread is True:
+                break
+            else:
+                ag = QtWidgets.QDesktopWidget().availableGeometry()
+                sg = QtWidgets.QDesktopWidget().screenGeometry()
+
+                widget = self.widget.geometry()
+
+                x = ag.width() - widget.width()
+                y = 2 * ag.height() - sg.height() - widget.height()
+                self.widget.move(x, y)
+
 
     # %% QT CONVERSION REGION
     """Handles the gathering of the .ui file for the converter"""
