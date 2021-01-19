@@ -15,8 +15,12 @@ Project is created with:
 ## Setup
 To run this project, run it locally using python.
 
-```
-$ cd ../lorem
-$ npm install
-$ npm start
+```javascript
+// code away!
+test = "test"
+one = 1
+
+def testOne():
+	print(test)
+	print(one)
 ```
