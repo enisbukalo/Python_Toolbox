@@ -15,7 +15,7 @@ Project is created with:
 ## Setup
 To run this project, run it locally using python.
 
-```javascript
+```python
 // code away!
 test = "test"
 one = 1
